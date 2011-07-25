@@ -1,11 +1,23 @@
-//
-// File: fht_8x8_core.v
-// Author: Ivan Rezki
-// Topic: RTL Core
-// 		  2-Dimensional Fast Hartley Transform
-//
-
-// Fast Hartley Transform ButterFly Unit
+/**********************************************************************
+ * File  : fht_8x8_core.v
+ * Author: Ivan Rezki
+ * email : irezki@gmail.com
+ * Topic : RTL Core
+ * 		  2-Dimensional Fast Hartley Transform
+ *
+ * Function: Fast Hartley Transform ButterFly Unit
+ *
+ * RIGHT TO USE: This code example, or any portion thereof, may be
+ * used and distributed without restriction, provided that this entire
+ * comment block is included with the example.
+ *
+ * DISCLAIMER: THIS CODE EXAMPLE IS PROVIDED "AS IS" WITHOUT WARRANTY
+ * OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED
+ * TO WARRANTIES OF MERCHANTABILITY, FITNESS OR CORRECTNESS. IN NO
+ * EVENT SHALL THE AUTHOR OR AUTHORS BE LIABLE FOR ANY DAMAGES,
+ * INCLUDING INCIDENTAL OR CONSEQUENTIAL DAMAGES, ARISING OUT OF THE
+ * USE OF THIS CODE.
+ **********************************************************************/
 
 module fht_bfly(
 	rstn,

@@ -1,51 +1,78 @@
-//
-// File: fht_8x8_core.v
-// Author: Ivan Rezki
-// Topic: RTL Core
-// 		  2-Dimensional Fast Hartley Transform
-//
-
-// TOP Level
-// 2D FHT 64 points -> ... clk delay
-// 
-//     +------------------------+
-//     |                        |
-// --->|    2D FHT/64 Points    |---> 
-//     |                        |
-//     +------------------------+
-//     |<---- .. clk delay ---->|
-//
-
-// Data is coming from somewhere (e.g. memory) with sclk one by one.
-// 1st step 1D FHT by rows:
-//			- Shift Register for 8 points -> ... clk delay
-//			- Alligner
-// 			- Calculate 1D FHT for 8 points. -> ... clk delay
-//				- FF is used on the each input of the butterfly
-//				- FF is used on the input of the multiplier
-// 2nd Step:
-// Matrix Transpose -> 64+1 clk delay
-// 			- Collecting data until 1st buffer is full as 64 points.
-//			- Read 64 points right away after 1st buffer is full.
-//			- At the same time 2nd buffer is ready to receive data.
-// 			- Collecting data until 2nd buffer is full as 64 points.
-//			- Read 64 points right away after 2nd buffer is full.
-//			- At the same time 1st buffer is ready to receive data once again.
-//			- ...
-// 3rd Step 1D FHT by columns.
-// 			- Combine data to make 8 points in parallel. -> ... clk delay
-// 			- Calculate 1D FHT for 8 points. -> ... clk delay
+/**********************************************************************
+ * File  : fht_8x8_core.v
+ * Author: Ivan Rezki
+ * email : irezki@gmail.com
+ * Topic : RTL Core
+ * 		  2-Dimensional Fast Hartley Transform
+ *
+ * Compilation Notes:
+ *  1).Memory
+ *     - if you use Xilinx FPGA for prototyping 
+ *       compile this code along with 
+ *       USE_FPGA_SPSRAM definition and
+ *       XilinxCoreLib library,
+ *     - otherwise compile this code
+ *       along with USE_ASIC_SPSRAM
+ *  2).Multiplier
+ *     - if you use Xilinx FPGA for prototyping 
+ *       compile this code along with 
+ *       USE_FPGA_MULT definition
+ *     - otherwise compile this code
+ *       along with USE_ASIC_MULT
+ *
+ * TOP Level
+ * 2D FHT 64 points -> ... clk delay
+ * 
+ *     +------------------------+
+ *     |                        |
+ * --->|    2D FHT/64 Points    |---> 
+ *     |                        |
+ *     +------------------------+
+ *     |<---- .. clk delay ---->|
+ *
+ *
+ * Data is coming from somewhere (e.g. memory) with sclk one by one.
+ * 1st step 1D FHT by rows:
+ *			- Shift Register for 8 points -> ... clk delay
+ *			- Alligner
+ * 			- Calculate 1D FHT for 8 points. -> ... clk delay
+ *				- FF is used on the each input of the butterfly
+ *				- FF is used on the input of the multiplier
+ * 2nd Step:
+ * Matrix Transpose -> 64+1 clk delay
+ * 			- Collecting data until 1st buffer is full as 64 points.
+ *			- Read 64 points right away after 1st buffer is full.
+ *			- At the same time 2nd buffer is ready to receive data.
+ * 			- Collecting data until 2nd buffer is full as 64 points.
+ *			- Read 64 points right away after 2nd buffer is full.
+ *			- At the same time 1st buffer is ready to receive data once again.
+ *			- ...
+ * 3rd Step 1D FHT by columns.
+ * 			- Combine data to make 8 points in parallel. -> ... clk delay
+ * 			- Calculate 1D FHT for 8 points. -> ... clk delay
+ *
+ * RIGHT TO USE: This code example, or any portion thereof, may be
+ * used and distributed without restriction, provided that this entire
+ * comment block is included with the example.
+ *
+ * DISCLAIMER: THIS CODE EXAMPLE IS PROVIDED "AS IS" WITHOUT WARRANTY
+ * OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED
+ * TO WARRANTIES OF MERCHANTABILITY, FITNESS OR CORRECTNESS. IN NO
+ * EVENT SHALL THE AUTHOR OR AUTHORS BE LIABLE FOR ANY DAMAGES,
+ * INCLUDING INCIDENTAL OR CONSEQUENTIAL DAMAGES, ARISING OUT OF THE
+ * USE OF THIS CODE.
+ **********************************************************************/
 
 // NOTES:
 // 1. Matrix Transposition maximum data width is 16 bits.
 
 // ----->>> Define Multiplier Type
-//`define USE_ASIC_MULT
+`define USE_ASIC_MULT
 //`define USE_FPGA_MULT
 
 // ----->>>  Define Memory Type
 //`define USE_FPGA_SPSRAM
-//`define USE_ASIC_SPSRAM
+`define USE_ASIC_SPSRAM
 
 module fht_8x8_core (
 	rstn,
@@ -91,16 +118,6 @@ fht_1d_x8 #(N) u1_fht_1d_x8_1st(
 // +++--->>> Matrix Transposition <<<---+++ \\
 wire			mem_valid;
 wire	[N+2:0]	mem_data;
-//mtx_trps_8x8_spsram #(N+3) u2_mtx_ts (
-//	.rstn		(rstn),
-//	.sclk		(sclk),
-//	
-//	.inp_valid		(fht_1d_valid),
-//	.inp_data		(fht_1d_data),
-//
-//	.mem_mux_data	(mem_data),
-//	.mem_mux_valid	(mem_valid)
-//);
 
 mtx_trps_8x8_dpsram #(N+3) u2_mtx_ts (
 	.rstn		(rstn),
