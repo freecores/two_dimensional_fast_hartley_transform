@@ -97,13 +97,20 @@ assign d = rca_N(a,twos_complement(b));
 		ainv  = ~a;
 		plus1 = rca_N(ainv,{{N-1{1'b0}},1'b1});
 	
-	// synopsys translate_off
-	// The only problem is absolute minumum negative value
-	if (a == {1'b1, {N-1{1'b0}}}) $display("--->>> 2's complement ERROR - absolute minumum negative value");
-	// synopsys translate_on
+		// pragma coverage block = off
+		// synopsys translate_off
+		// The only problem is absolute minumum negative value
+		if (a == {1'b1, {N-1{1'b0}}})
+			$display("--->>> 2's complement ERROR - absolute minimum negative value: %0b\n\t %m",a);
+		// synopsys translate_on
+		// pragma coverage block = on
 		
 		twos_complement = plus1[N-1:0];
 	end
 	endfunction
 
 endmodule
+
+// Update Log:
+// 27 Jul. 2011
+// added pragmas for coverage
