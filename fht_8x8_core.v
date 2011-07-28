@@ -6,14 +6,17 @@
  * 		  2-Dimensional Fast Hartley Transform
  *
  * Compilation Notes:
- *  1).Memory
+ *  1).Input Data
+ *     - no min.negative value
+ *  2).Memory
  *     - if you use Xilinx FPGA for prototyping 
  *       compile this code along with 
  *       USE_FPGA_SPSRAM definition and
  *       XilinxCoreLib library,
  *     - otherwise compile this code
  *       along with USE_ASIC_SPSRAM
- *  2).Multiplier
+ *     - max. bitwidth is 16bits
+ *  3).Multiplier
  *     - if you use Xilinx FPGA for prototyping 
  *       compile this code along with 
  *       USE_FPGA_MULT definition
@@ -23,13 +26,15 @@
  * TOP Level
  * 2D FHT 64 points -> ... clk delay
  * 
- *     +------------------------+
- *     |                        |
- * --->|    2D FHT/64 Points    |---> 
- *     |                        |
- *     +------------------------+
- *     |<---- .. clk delay ---->|
+ *     +-------------------------+
+ *     |                         |
+ * --->|    2D FHT/8x8 Points    |---> 
+ *     |                         |
+ *     +-------------------------+
+ *     |<---- ... clk delay ---->|
  *
+ * Input Data  : [N-1:0] signed
+ * Output Data : [N+5:0] signed
  *
  * Data is coming from somewhere (e.g. memory) with sclk one by one.
  * 1st step 1D FHT by rows:
@@ -63,16 +68,13 @@
  * USE OF THIS CODE.
  **********************************************************************/
 
-// NOTES:
-// 1. Matrix Transposition maximum data width is 16 bits.
-
 // ----->>> Define Multiplier Type
-`define USE_ASIC_MULT
+//`define USE_ASIC_MULT
 //`define USE_FPGA_MULT
 
 // ----->>>  Define Memory Type
 //`define USE_FPGA_SPSRAM
-`define USE_ASIC_SPSRAM
+//`define USE_ASIC_SPSRAM
 
 module fht_8x8_core (
 	rstn,
