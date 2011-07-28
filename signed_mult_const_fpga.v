@@ -54,8 +54,9 @@ output signed [N  :0] p; // product output
 // wire [8:0] mult_constant; // always positive
 // assign mult_constant = 9'd362;
 
-wire signed [17:0] mult_constant; // always positive
-assign mult_constant = {1'b0, 17'd92681};
+//wire signed [17:0] mult_constant; // always positive
+//assign mult_constant = {1'b0, 17'd92681};
+parameter mult_constant = {1'b0, 17'd92681};
 
 reg signed [N-1:0] a_FF;
 always @(posedge clk)
@@ -68,3 +69,7 @@ wire signed [(16+1)+N-1:0] p_tmp = $signed(a_FF) * $signed(mult_constant);
 assign p = p_tmp >> 16;
 
 endmodule
+
+// Update Log:
+// 27 Jul. 2011
+// wire [17:0] mult_constant replaced by parameter

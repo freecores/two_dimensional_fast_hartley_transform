@@ -38,8 +38,9 @@ input  [N-1:0] a; // variable - positive/negative
 output [N  :0] p; // product output
 
 // FHT constant
-wire [8:0] mult_constant; // always positive
-assign mult_constant = 9'd362;
+//wire [8:0] mult_constant; // always positive
+//assign mult_constant = 9'd362;
+parameter mult_constant = 9'd362;
 
 reg [N-1:0] a_FF;
 always @(posedge clk)
@@ -60,7 +61,7 @@ assign b = a_FF[N-1] ? {~a_FF[N-1:0] + {{N-1{1'b0}},1'b1} } : a_FF[N-1:0];
 wire [N+7:0] mult_wo_sign; // mult without sign
 assign mult_wo_sign = b[N-2:0]*mult_constant;
 
-// Divide on 256 - [N+7-8:0] = [N-1:0]
+// Divided by 256 - [N+7-8:0] = [N-1:0]
 wire [N-1:0] div256; // divided 256
 assign div256 = mult_wo_sign >> 8;
 
@@ -69,3 +70,7 @@ assign p = a_FF[N-1] ?
 					{1'b0,  div256[N-1:0]}
 					;
 endmodule
+
+// Update Log:
+// 27 Jul. 2011
+// wire [8:0] mult_constant replaced by parameter
